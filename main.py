@@ -180,8 +180,17 @@ class ProjectHandler(webapp.RequestHandler):
   def get(self, project_key):
     user = GetCurrentUser(self.request)
     project = models.Project.get_by_key_name(project_key)
+
     if not project:
       self.response.set_status(404)
+
+    requested_format = self.request.get('format', 'html')
+
+    if requested_format == 'json':
+        self.response.headers['Content-Type'] = "application/json"
+        self.response.out.write(project.as_json)
+        return
+
     can_edit = user and project and user.sha1_key == project.owner.sha1_key
     edit_mode = can_edit and (self.request.get('mode') == "edit")
 

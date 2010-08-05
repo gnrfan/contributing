@@ -21,7 +21,20 @@ from google.appengine.ext import db
 import logging
 import sha
 
+from django.utils import simplejson
+
+
 SALT = 'Contributing!'
+
+"""
+class jsonEncoder(simplejson.JSONEncoder):
+  def default(self, obj):
+    isa=lambda *xs: any(isinstance(obj, x) for x in xs) # shortcut
+    return obj.isoformat() if isa(datetime.datetime) else \
+      dict((p, getattr(obj, p)) for p in obj.properties()) if isa(db.Model) else \
+      obj.email() if isa(users.User) else \
+      simplejson.JSONEncoder.default(self, obj)
+"""
 
 class User(db.Model):
   """A user's global state, not specific to a project."""
@@ -104,6 +117,17 @@ class Project(db.Model):
   def last_edit_short(self):
     return str(self.last_edit)[0:10]
 
+  @property
+  def as_json(self):
+    project_data = {}
+    project_data['name'] = self.display_name
+    project_data['code_repo'] = self.code_repo
+    project_data['home_page']= self.home_page
+    project_data['bug_tracker'] = self.bug_tracker
+    project_data['how_to'] = self.how_to
+    project_data['page_mantainer'] = self.owner.display_name()
+    project_data['last_modified'] = str(self.last_edit)
+    return simplejson.dumps(project_data, indent=4, sort_keys=True)
 
 class Contributor(db.Model):
   """A user-project tuple."""
