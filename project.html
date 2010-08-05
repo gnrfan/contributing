@@ -81,7 +81,7 @@ fields auto-linkify any URL(s) and auto-add &lt;br/&gt; tags.</p>
      {% else %}
          <tr valign='bottom'>
           <td align='right' class='f'><nobr>Maintainer of this</nobr><br/><nobr>metadata page:</nobr></td>
-          <td><a href="{{ project.owner.profile_page_url|escape }}">{{ project.owner.public_name|escape }}</a></td>
+          <td>{% if project.owner.gravatar %}<a href="{{ project.owner.profile_page_url|escape }}"><img src="{{ project.owner.gravatar }}?size=32" border="0" /></a>{% endif %}<a href="{{ project.owner.profile_page_url|escape }}">{{ project.owner.public_name|escape }}</a></td>
          </tr>
          <tr valign='bottom'>
            <td align='right' class='f'>Last modified:</td>

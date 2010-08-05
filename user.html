@@ -3,7 +3,7 @@
    User Profile
 {% endblock %}
 {% block title %}
-  User <em>{{ profile_user.public_name|escape }}</em>
+{% if profile_user.gravatar %}<img src="{{ profile_user.gravatar }}" border="0" /></a>{% endif %}  User <em>{{ profile_user.public_name|escape }}</em>
 {% endblock %}
 {% block content %}
 

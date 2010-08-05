@@ -20,6 +20,7 @@ from google.appengine.ext import db
 
 import logging
 import sha
+import md5
 
 SALT = 'Contributing!'
 
@@ -64,6 +65,14 @@ class User(db.Model):
     if self.openid_user:
       return sha.sha(self.openid_user + SALT).hexdigest()[0:8]
     return Exception("unknown user type")
+
+  @property
+  def gravatar(self):
+    if self.google_user:
+        hexdigest = md5.md5(self.google_user.email()).hexdigest()
+        return 'http://www.gravatar.com/avatar/%s/' % hexdigest
+    else:
+        return None
 
   def LogOut(self, handler, next_url):
     if self.google_user:
